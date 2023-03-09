@@ -28,13 +28,20 @@ namespace CoreApplication.Models
 
     public abstract class AbstractModel<T> where T : AbstractModel<T>, new()
     {
+        public static T? findById(int id)
+        {
+            var property = typeof(T).GetProperty("Id");
+            var attribute = property?.GetCustomAttribute<TableColumnAttribute>();
+
+            if (property == null || attribute == null)
+                throw new Exception($"The model {typeof(T).FullName} does not have an 'Id' property.");
+
+            return find(Tuple.Create(attribute.Name, "=", id as object)).FirstOrDefault();
+        }
+
         protected static IReadOnlyList<T> find(params Tuple<string, string, object>?[] clauses)
         {
-            var fullClassName = typeof(T).FullName;
-            if (fullClassName == null)
-                throw new Exception($"The model '{typeof(T)}' does not have a FullName property");
-    
-            var tableName = Assembly.GetAssembly(typeof(T))!.GetType(fullClassName)!.GetCustomAttribute<TableNameAttribute>()!.Name;
+            var tableName = typeof(T).GetCustomAttribute<TableNameAttribute>()?.Name;
             if (tableName == null)
                 throw new Exception($"The model is missing the table name attribute: '{typeof(T).FullName}'");
 

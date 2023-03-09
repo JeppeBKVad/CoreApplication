@@ -7,11 +7,6 @@ namespace CoreApplication.Models
     [TableName("users")]
     public class UserModel : AbstractModel<UserModel>
     {
-        public static UserModel? findById(int id)
-        {
-            return find(Tuple.Create("id", "=", id as object)).FirstOrDefault();
-        }
-
         public static UserModel? findByUsername(string username)
         {
             return find(Tuple.Create("username", "=", username as object)).FirstOrDefault();

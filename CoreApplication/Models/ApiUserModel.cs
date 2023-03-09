@@ -3,11 +3,6 @@
     [TableName("api_users")]
     public class ApiUserModel : AbstractModel<ApiUserModel>
     {
-        public static ApiUserModel? findById(int id)
-        {
-            return find(Tuple.Create("id", "=", id as object)).FirstOrDefault();
-        }
-
         public static ApiUserModel? findByToken(string token)
         {
             return find(Tuple.Create("current_token", "=", token as object)).FirstOrDefault();
