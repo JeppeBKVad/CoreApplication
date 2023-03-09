@@ -3,6 +3,224 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Data oversigt</h1>
 </div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+<!--Grid styling-->
+<style>
+    .grid-container {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-gap: 20px;
+    }
+
+    .grid-item {
+        background-color: #fff;
+        border: 1px solid #ddd;
+        padding: 20px;
+    }
+</style>
+<!--Insert Chart-->
+<div class="grid-container">
+    <div class="grid-item">
+        <canvas id="myChart"></canvas>
+        <br>
+        <label for="fromDate">From:</label>
+        <input type="date" id="fromDate" name="fromDate">
+        <label for="toDate">To:</label>
+        <input type="date" id="toDate" name="toDate">
+        <select id="productName" name="nameSelect">
+            <option value="cykel">Cykel</option>
+            <option value="fitness cykel">Fitness Cykel</option>
+            <option value="løbe hjul">Løbe hjul</option>
+        </select>
+        <button onclick="updateChart()">Update Chart</button>
+    </div>
+    <div class="grid-item">
+        <canvas id="myChart2"></canvas>
+        <br>
+        <label for="fromDate2">From:</label>
+        <input type="date" id="fromDate2" name="fromDate2">
+        <label for="toDate2">To:</label>
+        <input type="date" id="toDate2" name="toDate2">
+        <button onclick="updateChart2()">Update Chart</button>
+    </div>
+</div>
+
+<script>
+
+    const colors = ["rgb(0, 153, 255)",
+                    "rgb(102, 204, 255)",
+                    "rgb(0, 204, 204)",
+                    "rgb(0, 153, 153)",
+                    "rgb(0, 102, 102)",
+                    "rgb(51, 153, 204)",
+                    "rgb(102, 153, 153)"];
+
+    const labels = ["2023-03-02",
+                    "2023-03-03",
+                    "2023-03-04",
+                    "2023-03-05",
+                    "2023-03-06",
+                    "2023-03-07",
+                    "2023-03-08"];
+
+    const data = {
+        labels: labels,
+        datasets: [{
+            label: 'Oversigt',
+            backgroundColor: colors,
+            borderColor: 'rgb(128, 128, 128)',
+            data: [50, 33, 14, 55, 12, 24, 46],
+        }]
+    };
+
+    const config = {
+        type: 'bar',
+        data,
+        options: {
+            scales: {
+                x: {
+                    type: 'time',
+                    time: {
+                        unit: 'day'
+                    }
+                }
+            }
+        }
+    };
+
+    var myChart = new Chart(
+        document.getElementById('myChart'),
+        config
+    );
+
+    var myChart2 = new Chart(
+        document.getElementById('myChart2'),
+        config
+    );
+
+    function filterData(data, fromDate, toDate) {
+        const filteredData = {
+            labels: [],
+            datasets: []
+        };
+
+        // Filter labels
+        for (let i = 0; i < data.labels.length; i++) {
+            const date = new Date(data.labels[i]);
+            if (date >= new Date(fromDate) && date <= new Date(toDate)) {
+            filteredData.labels.push(data.labels[i]);
+            }
+        }
+
+        // Filter datasets
+        for (let i = 0; i < data.datasets.length; i++) {
+            const filteredDataset = {
+            label: data.datasets[i].label,
+            backgroundColor: data.datasets[i].backgroundColor,
+            borderColor: data.datasets[i].borderColor,
+            data: []
+            };
+            for (let j = 0; j < data.datasets[i].data.length; j++) {
+            const date = new Date(data.labels[j]);
+            if (date >= new Date(fromDate) && date <= new Date(toDate)) {
+                filteredDataset.data.push(data.datasets[i].data[j]);
+            }
+            }
+            filteredData.datasets.push(filteredDataset);
+        }
+
+        return filteredData;
+    }
+
+    function updateChart() {
+        var fromDate = document.getElementById('fromDate').value;
+        var toDate = document.getElementById('toDate').value;
+        var productName = document.getElementById('productName').value;
+        var url = "Home/SearchProductByName?name=" + productName;
+        $.get(url, null, function(data) {
+            var newData = {
+                labels: [],
+                datasets: []
+            };
+            var colors = ["rgb(0, 153, 255)", "rgb(102, 204, 255)", "rgb(0, 204, 204)", "rgb(0, 153, 153)", "rgb(0, 102, 102)", "rgb(51, 153, 204)", "rgb(102, 153, 153)"];
+            var datasets = [];
+            for (var i = 0; i < data.length; i++) {
+                var label = data[i].SoldAt;
+                var dataset = {
+                    label: label,
+                    backgroundColor: colors[i % colors.length],
+                    borderColor: 'rgb(128, 128, 128)',
+                    data: [data[i].Amount]
+                };
+                datasets.push(dataset);
+                newData.labels.push(label);
+            }
+            newData.datasets = datasets;
+            myChart.data = newData;
+            myChart.update();
+        });
+    }
+
+
+    function updateChart2() {
+        var fromDate = document.getElementById('fromDate2').value;
+        var toDate = document.getElementById('toDate2').value;
+        var newData = filterData(data, fromDate, toDate);
+        myChart2.data = newData;
+        myChart2.update();
+    }
+
+    window.onload = function(){
+
+        var url = "Home/SearchProductByName?name=cykel"
+
+        //$.get(url, null, function(data) {
+        //    console.log(data);
+        //    var newData = {
+        //    labels: [],
+        //    datasets: []
+        //    };
+        //    var colors = ["rgb(0, 153, 255)", "rgb(102, 204, 255)", "rgb(0, 204, 204)", "rgb(0, 153, 153)", "rgb(0, 102, 102)", "rgb(51, 153, 204)", "rgb(102, 153, 153)"];
+        //    var datasets = [];
+        //    for (var i = 0; i < data.length; i++) {
+        //        var label = data[i].SoldAt;
+        //        var dataset = {
+        //            label: label,
+        //            backgroundColor: colors[i % colors.length],
+        //            borderColor: 'rgb(128, 128, 128)',
+        //            data: [data[i].Amount]
+        //        };
+        //        datasets.push(dataset);
+        //        newData.labels.push(label);
+        //    }
+        //    newData.datasets = datasets;
+        //    myChart.data = newData;
+        //    myChart.update();
+        //});
+
+        var url2 = "Home/TotalNetto"
+
+        $.get(url2, null, function(data) {
+            var newData = {
+            labels: [],
+            datasets: [{
+                label: "Total Netto",
+                backgroundColor: "rgb(0, 153, 255)",
+                borderColor: 'rgb(128, 128, 128)',
+                data: []
+            }]
+            };
+            for (var i = 0; i < data.length; i++) {
+                newData.labels.push(data[i].Date);
+                newData.datasets[0].data.push(data[i].TotalAmountSold);
+            }
+            myChart2.data = newData;
+            myChart2.update();
+        })
+    };
+</script>
