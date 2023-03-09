@@ -15,9 +15,14 @@ public class HomeController : Controller
 
     public IActionResult Index()
     {
+
         return View();
     }
-
+    public SaleModel GetSpecificProduct(string productName)
+    {
+        var data = SaleModel.findSales(productName);
+        return (SaleModel)data;
+    }
     public IActionResult Privacy()
     {
         return View();
