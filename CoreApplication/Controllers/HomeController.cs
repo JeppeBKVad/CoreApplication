@@ -18,10 +18,20 @@ public class HomeController : Controller
 
         return View();
     }
-    public SaleModel GetSpecificProduct(string productName)
+    public List<SaleModel> SearchProductByName(string productName)
     {
+        var returndata = new List<SaleModel>();
         var data = SaleModel.findSales(productName);
-        return (SaleModel)data;
+        foreach (var item in data)
+        {
+            var productsbyname = new SaleModel();
+            productsbyname.Id = item.Id;
+            productsbyname.SoldAt = item.SoldAt;
+            productsbyname.Amount = item.Amount;
+            returndata.Add(productsbyname);
+        }
+
+        return returndata;
     }
     public List<DaySales> TotalNetto()
     {
