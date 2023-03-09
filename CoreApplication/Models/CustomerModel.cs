@@ -1,14 +1,14 @@
 namespace CoreApplication.Models
 {
-    public class CustomerSaleModel
+    public class CustomerModel
     {
         public int Id { get; set; }
-        public int Customer { get; set; }
-        public int Sales { get; set; }
+        public string ExternalId { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime ModifiedAt { get; set; }
-        public CustomerSaleModel()
+        public CustomerModel()
         {
+            ExternalId = string.Empty;
             CreatedAt = DateTime.MinValue;
             ModifiedAt = DateTime.MinValue;
         }
