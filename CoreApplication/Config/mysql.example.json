@@ -1,0 +1,7 @@
+{
+  "host": "1.2.3.4",
+  "port": 3306, // Default MySQL port number
+  "user": "root",
+  "password": "",
+  "database": "coreappdb"
+}
