@@ -23,6 +23,28 @@ public class HomeController : Controller
         var data = SaleModel.findSales(productName);
         return (SaleModel)data;
     }
+    public List<DaySales> TotalNetto()
+    {
+        var sales = SaleModel.getTotal();
+        var productData = ProductModel.getTotal();
+
+        var salesByDay = from sale in sales
+        join product in productData on sale.Product equals product.Id
+        group new { Sale = sale, Product = product } by sale.SoldAt.Date into salesByDate
+        select new DaySales
+        {
+            Date = salesByDate.Key,
+            TotalAmountSold = salesByDate.Sum(sale => sale.Sale.Amount * sale.Product.Price)
+        };
+
+        List<DaySales> salesByDayList = salesByDay.ToList();
+        return salesByDayList;
+    }
+    public class DaySales
+    {
+        public DateTime Date { get; set; }
+        public float TotalAmountSold { get; set; }
+    }
     public IActionResult Privacy()
     {
         return View();

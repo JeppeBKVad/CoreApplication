@@ -18,22 +18,24 @@ namespace CoreApplication.Models
                 ModifiedAt = reader.GetDateTime("modified_at"),
             };
         }
-        public static SaleModel? getTotal(DateTime startDate, DateTime endDate)
+        public static IReadOnlyList<SaleModel> getTotal()
         {
             using var command = new MySqlCommand()
             {
                 Connection = Database.Instance.connection,
-                CommandText = "SELECT * FROM sales WHERE sold_at >= @startDate AND sold_at <= @endDate"
+                CommandText = "SELECT * FROM sales;"
             };
-            command.Parameters.AddWithValue("startDate", startDate);
-            command.Parameters.AddWithValue("endDate", endDate);
 
             using var reader = command.ExecuteReader();
+            var result = new List<SaleModel>();
+            if (!reader.HasRows) 
+                return result.AsReadOnly();
 
-            if (!reader.HasRows)
-                return null;
-
-            return fromMysqlReader(reader);
+            while(reader.Read())
+            {
+                result.Add(fromMysqlReader(reader));
+            }    
+            return result.AsReadOnly();
         }
         public static IReadOnlyList<SaleModel> findSales(string productName)
         {
@@ -77,7 +79,7 @@ namespace CoreApplication.Models
         public int Id { get; set; }
         public int Product { get; set; }
         public int Amount { get; set; }
-        public DateTime SoldAt { get; set; }
+        public DateTime SoldAt { get; set; } 
         public int AddedBy { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime ModifiedAt { get; set; }
