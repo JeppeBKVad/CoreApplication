@@ -1,0 +1,7 @@
+{
+  "Server": "1.2.3.4",
+  "Port":  "3306", // Default MySQL port number
+  "User ID": "MyUserName",
+  "Password": "MyPassword",
+  "Database": "MyDatabaseName"
+}
