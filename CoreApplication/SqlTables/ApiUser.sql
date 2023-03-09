@@ -1,0 +1,13 @@
+﻿use coreappdb;
+
+CREATE TABLE api_users (
+  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  current_token VARCHAR(255) NOT NULL,
+  owner INT NOT NULL,
+  token_nonce VARCHAR(255) NOT NULL,
+  refreshable TINYINT(1) NOT NULL DEFAULT 0,
+  expires_at TIMESTAMP NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  last_used_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP(),
+  FOREIGN KEY (owner) REFERENCES users(id)
+);

@@ -1,0 +1,13 @@
+﻿use coreappdb;
+
+CREATE TABLE sales (
+  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  product INT NOT NULL,
+  amount INT NOT NULL,
+  sold_at TIMESTAMP NOT NULL,
+  added_by INT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP(),
+  modified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP(),
+  FOREIGN KEY (product) REFERENCES products(id),
+  FOREIGN KEY (added_by) REFERENCES users(id)
+);

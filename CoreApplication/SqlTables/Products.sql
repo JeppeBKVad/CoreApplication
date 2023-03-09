@@ -1,0 +1,14 @@
+﻿use coreappdb;
+
+CREATE TABLE products (
+  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  external_id VARCHAR(255) NOT NULL,
+  name VARCHAR(255) NOT NULL,
+  price FLOAT NOT NULL,
+  description TEXT NOT NULL,
+  added_by INT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP(),
+  modified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP(),
+  UNIQUE INDEX uk_external_id(external_id),
+  FOREIGN KEY (added_by) REFERENCES users(id)
+);
