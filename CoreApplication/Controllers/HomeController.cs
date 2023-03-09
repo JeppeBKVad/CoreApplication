@@ -21,7 +21,7 @@ public class HomeController : Controller
     public List<SaleModel> SearchProductByName(string productName)
     {
         var returndata = new List<SaleModel>();
-        var data = SaleModel.findSales(productName);
+        var data = SaleModel.searchByName(productName);
         foreach (var item in data)
         {
             var productsbyname = new SaleModel();
@@ -35,8 +35,8 @@ public class HomeController : Controller
     }
     public List<DaySales> TotalNetto()
     {
-        var sales = SaleModel.getTotal();
-        var productData = ProductModel.getTotal();
+        var sales = SaleModel.findAll();
+        var productData = ProductModel.findAll();
 
         var salesByDay = from sale in sales
         join product in productData on sale.Product equals product.Id

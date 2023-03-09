@@ -106,6 +106,18 @@ namespace CoreApplication.Models
                 {
                     property.SetValue(data, reader.GetDateTime(attribute.Name));
                 }
+                else if(property.PropertyType == typeof(float))
+                {
+                    property.SetValue(data, reader.GetFloat(attribute.Name));
+                }
+                else if(property.PropertyType == typeof(bool))
+                {
+                    property.SetValue(data, reader.GetInt32(attribute.Name) != 0);
+                }
+                else if(property.PropertyType == typeof(double))
+                {
+                    property.SetValue(data, reader.GetDouble(attribute.Name));
+                }
                 else
                 {
                     throw new Exception($"Unhandled model property type: '{property.PropertyType.FullName}'");

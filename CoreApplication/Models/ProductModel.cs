@@ -1,50 +1,37 @@
-using MySqlConnector;
-
 namespace CoreApplication.Models
 {
-    public class ProductModel
+    [TableName("products")]
+    public class ProductModel : AbstractModel<ProductModel>
     {
-        public static ProductModel fromMysqlReader(MySqlDataReader reader)
+        public static IReadOnlyList<ProductModel> findAll()
         {
-            return new ProductModel()
-            {
-                Id = reader.GetInt32("id"),
-                ExternalId = reader.GetString("external_id"),
-                Name = reader.GetString("name"),
-                Price = reader.GetFloat("price"),
-                Description = reader.GetString("description"),
-                AddedBy = reader.GetInt32("added_by"),
-                CreatedAt = reader.GetDateTime("created_at"),
-                ModifiedAt = reader.GetDateTime("modified_at"),
-            };
+            return find(Tuple.Create("1", "=", "1" as object));
         }
-        public static IReadOnlyList<ProductModel> getTotal()
-        {
-            using var command = new MySqlCommand()
-            {
-                Connection = Database.Instance.connection,
-                CommandText = "SELECT * FROM products;"
-            };
 
-            using var reader = command.ExecuteReader();
-            var result = new List<ProductModel>();
-            if (!reader.HasRows) 
-                return result.AsReadOnly();
-
-            while(reader.Read())
-            {
-                result.Add(fromMysqlReader(reader));
-            }    
-            return result.AsReadOnly();
-        }
+        [TableColumn("id")]
         public int Id { get; set; }
+
+        [TableColumn("external_id")]
         public string ExternalId { get; set; }
+
+        [TableColumn("name")]
         public string Name { get; set; }
+
+        [TableColumn("price")]
         public float Price { get; set; }
+
+        [TableColumn("description")]
         public string Description { get; set; }
+
+        [TableColumn("added_by")]
         public int AddedBy { get; set; }
+
+        [TableColumn("created_at")]
         public DateTime CreatedAt { get; set; }
+
+        [TableColumn("modified_at")]
         public DateTime ModifiedAt { get; set; }
+
         public ProductModel()
         {
             ExternalId = string.Empty;

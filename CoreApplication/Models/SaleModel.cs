@@ -3,41 +3,15 @@ using MySqlConnector;
 
 namespace CoreApplication.Models
 {
-    public class SaleModel
+    [TableName("sales")]
+    public class SaleModel : AbstractModel<SaleModel>
     {
-        public static SaleModel fromMysqlReader(MySqlDataReader reader)
+        public static IReadOnlyList<SaleModel> findAll()
         {
-            return new SaleModel()
-            {
-                Id = reader.GetInt32("id"),
-                Product = reader.GetInt32("product"),
-                Amount = reader.GetInt32("amount"),
-                SoldAt = reader.GetDateTime("sold_at"),
-                AddedBy = reader.GetInt32("added_by"),
-                CreatedAt = reader.GetDateTime("created_at"),
-                ModifiedAt = reader.GetDateTime("modified_at"),
-            };
+            return find(Tuple.Create("1", "=", "1" as object));
         }
-        public static IReadOnlyList<SaleModel> getTotal()
-        {
-            using var command = new MySqlCommand()
-            {
-                Connection = Database.Instance.connection,
-                CommandText = "SELECT * FROM sales;"
-            };
 
-            using var reader = command.ExecuteReader();
-            var result = new List<SaleModel>();
-            if (!reader.HasRows) 
-                return result.AsReadOnly();
-
-            while(reader.Read())
-            {
-                result.Add(fromMysqlReader(reader));
-            }    
-            return result.AsReadOnly();
-        }
-        public static IReadOnlyList<SaleModel> findSales(string productName)
+        public static IReadOnlyList<SaleModel> searchByName(string productName)
         {
             using var command = new MySqlCommand()
             {
@@ -53,11 +27,12 @@ namespace CoreApplication.Models
 
             while(reader.Read())
             {
-                result.Add(fromMysqlReader(reader));
+                result.Add(fromReader(reader));
             }    
             return result.AsReadOnly();
         }
-        public static bool InsertSale(int id, int product, int amount, DateTime sold_at, int added_by)
+
+        public static bool Insert(int id, int product, int amount, DateTime sold_at, int added_by)
         {
             using var command = new MySqlCommand()
             {
@@ -72,17 +47,31 @@ namespace CoreApplication.Models
             command.Parameters.AddWithValue("added_by", added_by);
 
             command.ExecuteNonQuery();
-
             
             return true;
         }
+
+        [TableColumn("id")]
         public int Id { get; set; }
+
+        [TableColumn("product")]
         public int Product { get; set; }
+
+        [TableColumn("amount")]
         public int Amount { get; set; }
-        public DateTime SoldAt { get; set; } 
+
+        [TableColumn("sold_at")]
+        public DateTime SoldAt { get; set; }
+
+        [TableColumn("added_by")]
         public int AddedBy { get; set; }
+
+        [TableColumn("created_at")]
         public DateTime CreatedAt { get; set; }
+
+        [TableColumn("modified_at")]
         public DateTime ModifiedAt { get; set; }
+
         public SaleModel()
         {
             SoldAt = DateTime.MinValue;
