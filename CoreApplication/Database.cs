@@ -24,12 +24,21 @@ namespace CoreApplication
 
         private static Database? _instance;
 
-        public MySqlConnection connection;
+        public MySqlConnection connection
+        {
+            get
+            {
+                var con = connectionTemplate.Clone();
+                con.Open();
+                return con;
+            }
+        }
+
+        private MySqlConnection connectionTemplate;
 
         public Database()
         {
-            connection = new MySqlConnection(GetConnectionString());
-            connection.Open();
+            connectionTemplate = new MySqlConnection(GetConnectionString());
         }
 
         private string GetConnectionString()
