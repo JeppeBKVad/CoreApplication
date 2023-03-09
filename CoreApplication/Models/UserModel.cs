@@ -1,53 +1,52 @@
 ﻿using CoreApplication.Enums;
 using MySqlConnector;
-using System.Data;
+using System.Text;
 
 namespace CoreApplication.Models
 {
-    public class UserModel
+    [TableName("users")]
+    public class UserModel : AbstractModel<UserModel>
     {
-        public static UserModel fromMysqlReader(MySqlDataReader reader)
+        public static UserModel? findById(int id)
         {
-            reader.Read();
-            return new UserModel()
-            {
-                Id = reader.GetInt32("id"),
-                UserName = reader.GetString("username"),
-                Password = reader.GetString("password"),
-                Email = reader.GetString("email"),
-                Status = Enum.Parse<ActiveStatus>(reader.GetString("status"), true),
-                CreatedBy = reader.GetInt32("created_by"),
-                LastEditedBy = reader.GetInt32("last_edited_by"),
-                CreatedAt = reader.GetDateTime("created_at"),
-                ModifiedAt = reader.GetDateTime("modified_at"),
-            };
+            return find(Tuple.Create("id", "=", id as object)).FirstOrDefault();
         }
 
-        public static UserModel? findUser(int id)
+        public static UserModel? findByUsername(string username)
         {
-            using var command = new MySqlCommand()
-            {
-                Connection = Database.Instance.connection,
-                CommandText = "SELECT * FROM users WHERE id=@id",
-            };
-            command.Parameters.AddWithValue("id", id);
-
-            using var reader = command.ExecuteReader();
-
-            if (!reader.HasRows)
-                return null;
-
-            return fromMysqlReader(reader);
+            return find(Tuple.Create("username", "=", username as object)).FirstOrDefault();
         }
 
+        public static UserModel? findByEmail(string email)
+        {
+            return find(Tuple.Create("email", "=", email as object)).FirstOrDefault();
+        }
+
+        [TableColumn("id")]
         public int Id { get; set; }
+
+        [TableColumn("username")]
         public string UserName { get; set; }
+
+        [TableColumn("password")]
         public string Password { get; set; }
+
+        [TableColumn("email")]
         public string Email { get; set; }
+
+        [TableColumn("status")]
         public ActiveStatus Status { get; set; }
+
+        [TableColumn("created_by")]
         public int CreatedBy { get; set; }
+
+        [TableColumn("last_edited_by")]
         public int LastEditedBy { get; set; }
-        public DateTime CreatedAt { get; set; } 
+
+        [TableColumn("created_at")]
+        public DateTime CreatedAt { get; set; }
+
+        [TableColumn("modified_at")]
         public DateTime ModifiedAt { get; set; }
 
         public UserModel()
