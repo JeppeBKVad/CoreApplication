@@ -18,5 +18,9 @@
             CreatedAt = DateTime.MinValue;
             LastUsedAt = DateTime.MinValue;
         }
+        public static bool Verify(string currentToken, DateTime currentTime)
+        {
+            return true;
+        }
     }
 }
