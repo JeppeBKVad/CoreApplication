@@ -1,6 +1,6 @@
 namespace CoreApplication.Models
 {
-    public class Sales
+    public class SalesModel
     {
         public int Id { get; set; }
         public int Product { get; set; }
@@ -9,7 +9,7 @@ namespace CoreApplication.Models
         public int Added_by { get; set; }
         public DateTime Create_at { get; set; }
         public DateTime Modified_at { get; set; }
-        public Sales(int id, int product, int amount, DateTime sold_at, int added_by, DateTime create_at, DateTime modified_at)
+        public SalesModel(int id, int product, int amount, DateTime sold_at, int added_by, DateTime create_at, DateTime modified_at)
         {
             this.Id = id;
             this.Product = product;

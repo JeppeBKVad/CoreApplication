@@ -1,6 +1,6 @@
 namespace CoreApplication.Models
 {
-    public class Products
+    public class ProductsModel
     {
         public int Id { get; set; }
         public string External_id { get; set; }
@@ -10,7 +10,7 @@ namespace CoreApplication.Models
         public int Added_by { get; set; }
         public DateTime Created_at { get; set; }
         public DateTime Modified_at { get; set; }
-        public Products(int id, string external_id, string name, float price, string description, int added_by, DateTime created_at, DateTime modified_at)
+        public ProductsModel(int id, string external_id, string name, float price, string description, int added_by, DateTime created_at, DateTime modified_at)
         {
             this.Id = id; 
             this.External_id = external_id;

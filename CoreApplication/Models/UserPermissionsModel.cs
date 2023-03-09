@@ -1,6 +1,6 @@
 namespace CoreApplication.Models
 {
-    public class User_permissions
+    public class User_permissionsModel
     {
         public int Id { get; set; }
         public int User { get; set; }
@@ -8,7 +8,7 @@ namespace CoreApplication.Models
         public int Last_edited_by { get; set; }
         public DateTime Created_at { get; set; }
         public DateTime Modified_at { get; set; }
-        public User_permissions(int id, int user, string permissions, int last_edited_by, DateTime created_at, DateTime modified_at)
+        public User_permissionsModel(int id, int user, string permissions, int last_edited_by, DateTime created_at, DateTime modified_at)
         {
             this.Id = id;
             this.User = user;
